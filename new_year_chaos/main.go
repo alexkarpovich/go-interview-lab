@@ -9,6 +9,13 @@ import (
 	"strings"
 )
 
+func Max(x, y int32) int32 {
+	if x < y {
+		return y
+	}
+	return x
+}
+
 // Complete the minimumBribes function below.
 func minimumBribes(q []int32) {
 	var min_bribes int32 = 0
@@ -16,14 +23,15 @@ func minimumBribes(q []int32) {
 	var j int32
 	ln := int32(len(q))
 
-	for i = 0; i < ln-1; i++ {
+	for i = ln - 1; i >= 0; i-- {
+
 		if q[i]-i > 3 {
 			fmt.Println("Too chaotic")
 			return
 		}
 
-		for j = i + 1; j < ln; j++ {
-			if q[i] > q[j] {
+		for j = Max(0, q[i]-2); j < i; j++ {
+			if q[j] > q[i] {
 				min_bribes++
 			}
 		}
