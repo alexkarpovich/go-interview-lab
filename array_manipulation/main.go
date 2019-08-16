@@ -9,20 +9,96 @@ import (
 	"strings"
 )
 
+const (
+	BEG int = iota
+	END
+	VAL
+)
+
+type Point struct {
+	X       int32
+	Related int32
+	Value   int64
+}
+
+func Init(q []int32, s int) *Point {
+	p := new(Point)
+	p.Value = int64(q[VAL])
+
+	if s == BEG {
+		p.X = q[BEG]
+		p.Related = q[END]
+	} else {
+		p.X = q[END]
+		p.Related = q[BEG]
+	}
+
+	return p
+}
+
 // Complete the arrayManipulation function below.
 func arrayManipulation(n int32, queries [][]int32) int64 {
 	var maxVal int64
-	arr := make([]int64, n)
+	var p, t *Point
+	var i int32
+	seg := []int{BEG, END}
+	rng := make([]*Point, n+1)
 
-	for _, op := range queries {
-		for i := op[0] - 1; i <= op[1]-1; i++ {
-			arr[i] = arr[i] + int64(op[2])
-		}
-	}
+	for qid, q := range queries {
+		if qid == 0 {
+			for _, s := range seg {
+				p = Init(q, s)
+				rng[q[s]] = p
+			}
 
-	for _, v := range arr {
-		if maxVal < v {
-			maxVal = v
+			maxVal = p.Value
+		} else {
+			for _, s := range seg {
+				if rng[q[s]] != nil {
+					p = rng[q[s]]
+					p.Value = p.Value + int64(q[VAL])
+				} else {
+					p := Init(q, s)
+
+					if s == BEG {
+						for i = q[BEG] - 1; i > 0; i-- {
+							t = rng[i]
+
+							if t != nil && t.Related > q[BEG] {
+								p.Value = p.Value + t.Value
+								break
+							}
+						}
+					} else {
+						for i = q[END] + 1; i <= n; i++ {
+							t = rng[i]
+
+							if t != nil && t.X > q[END] && t.Related < q[END] {
+								p.Value = p.Value + t.Value
+								break
+							}
+						}
+					}
+
+					rng[q[s]] = p
+				}
+
+				if p.Value > maxVal {
+					maxVal = p.Value
+				}
+			}
+
+			for i = q[BEG] + 1; i < q[END]; i++ {
+				t = rng[i]
+
+				if t != nil {
+					t.Value = t.Value + int64(q[VAL])
+
+					if t.Value > maxVal {
+						maxVal = t.Value
+					}
+				}
+			}
 		}
 	}
 
