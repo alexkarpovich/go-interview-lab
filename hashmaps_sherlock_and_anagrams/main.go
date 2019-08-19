@@ -9,24 +9,26 @@ import (
 	"strings"
 )
 
-// Complete the twoStrings function below.
-func twoStrings(s1 string, s2 string) string {
+func countCombinations(n int) int32 {
+	return int32(n * (n - 1) / 2)
+}
 
-	chars := make(map[rune]bool)
+// Complete the sherlockAndAnagrams function below.
+func sherlockAndAnagrams(s string) int32 {
+	var count int32
+	chars := make(map[rune][]int)
 
-	for _, c := range s1 {
-		chars[c] = true
+	for i, c := range s {
+		chars[c] = append(chars[c], i)
 	}
 
-	for _, c := range s2 {
-		_, ok := chars[c]
+	for i, c := range s {
+		ids, _ := chars[c]
 
-		if ok {
-			return "YES"
+		if len(ids) > 1 {
+			count = count + countCombinations(len(ids))
 		}
 	}
-
-	return "NO"
 
 }
 
@@ -45,13 +47,11 @@ func main() {
 	q := int32(qTemp)
 
 	for qItr := 0; qItr < int(q); qItr++ {
-		s1 := readLine(reader)
+		s := readLine(reader)
 
-		s2 := readLine(reader)
+		result := sherlockAndAnagrams(s)
 
-		result := twoStrings(s1, s2)
-
-		fmt.Fprintf(writer, "%s\n", result)
+		fmt.Fprintf(writer, "%d\n", result)
 	}
 
 	writer.Flush()

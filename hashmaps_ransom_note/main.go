@@ -33,7 +33,6 @@ func checkMagazine(magazine []string, note []string) {
 	} else {
 		fmt.Print("No")
 	}
-
 }
 
 func main() {
