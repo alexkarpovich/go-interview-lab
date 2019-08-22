@@ -1,5 +1,6 @@
-2
-hello
-world
-hi
-world
+5
+abcd
+abba
+abacada
+abacaba
+kkkk
