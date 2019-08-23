@@ -12,24 +12,28 @@ import (
 // Complete the countTriplets function below.
 func countTriplets(arr []int64, r int64) int64 {
 	var count int64
-	ln := len(arr)
+	possibleTuples := make(map[int64]int64)
+	possibleTriples := make(map[int64]int64)
 
-	for i := 0; i < ln-2; i++ {
-		for j := i + 1; j < ln-1; j++ {
-			for k := j + 1; k < ln; k++ {
-				if (arr[i] == 1 || arr[i]%r == 0) && arr[j] == arr[i]*r && arr[k] == arr[j]*r {
-					count++
-				}
-			}
+	for _, a := range arr {
+		if _, ok := possibleTriples[a]; ok {
+			// We met 3rd item and possibleTriples turnes into real
+			count += possibleTriples[a]
 		}
 
+		if _, ok := possibleTuples[a]; ok {
+			// Imagine we meet a*r as next then we'll have possibleTriples[a*r] triples
+			possibleTriples[a*r] += possibleTuples[a]
+		}
+		// Imagine we meet a*r as next then we'll have possibleTuples[a*r] tuples
+		possibleTuples[a*r]++
 	}
 
 	return count
 }
 
 func main() {
-	f, err := os.Open("./test.txt")
+	f, err := os.Open("./test_.txt")
 	if err != nil {
 		panic(err)
 	}
