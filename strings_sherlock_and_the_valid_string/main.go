@@ -8,6 +8,14 @@ import (
 	"strings"
 )
 
+func checkFreq(c1 int, c2 int, freq map[int]int) bool {
+	return len(freq) < 2 || len(freq) == 2 &&
+		(c1 == 1 && freq[c1] == 1 ||
+			c2 == 1 && freq[c2] == 1 ||
+			c2-c1 == 1 && freq[c2] == 1 ||
+			c1-c2 == 1 && freq[c1] == 1)
+}
+
 // Complete the isValid function below.
 func isValid(s string) string {
 	var c1, c2 int
@@ -30,7 +38,7 @@ func isValid(s string) string {
 		}
 	}
 
-	if len(freq) < 2 || len(freq) == 2 && (freq[c1] == 1 && freq[c2] > 1 && c2 > c1 || freq[c1] > 1 && freq[c2] == 1 && c2 < c1) {
+	if checkFreq(c1, c2, freq) {
 		return "YES"
 	}
 
